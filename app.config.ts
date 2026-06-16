@@ -3,6 +3,7 @@ export default () => ({
     nodeEnv: process.env.NODE_ENV || 'development',
     port: parseInt(process.env.PORT, 10) || 3001,
     url: process.env.APP_URL || 'http://localhost:3001',
+    adminKey: process.env.ADMIN_SECRET_KEY || '',
   },
   database: {
     host: process.env.DB_HOST || 'localhost',
