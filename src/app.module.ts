@@ -37,7 +37,7 @@ import { HealthController } from './health.controller';
         database: config.get('database.name'),
         models: [Shop, RewriteJob, UsageLog],
         autoLoadModels: true,
-        sync: config.get('app.nodeEnv') === 'development' ? { alter: true } : false,
+        sync: config.get('app.nodeEnv') === 'development' ? { alter: true } : undefined,
         logging: config.get('app.nodeEnv') === 'development' ? console.log : false,
         pool: { max: 10, min: 0, acquire: 30000, idle: 10000 },
         define: {
