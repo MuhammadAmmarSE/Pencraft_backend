@@ -1,7 +1,3 @@
-// PM2 ecosystem file
-// Controls both backend (NestJS) and frontend (Next.js) processes
-// Usage: pm2 start ecosystem.config.js --env production
-
 module.exports = {
   apps: [
     // ─── Backend — NestJS API ─────────────────────────────────────────────
@@ -9,45 +5,38 @@ module.exports = {
       name: 'copyai-api',
       cwd: '/',
       script: 'dist/main.js',
-      instances: 2,             // 2 processes — uses both t3.micro vCPUs
-      exec_mode: 'cluster',     // Cluster mode for zero-downtime restarts
+      instances: 2,
+      exec_mode: 'cluster',
       max_memory_restart: '400M',
       env_production: {
         NODE_ENV: 'production',
         PORT: 8023,
       },
-      // Logging
-      out_file: '/var/log/copyai/api.out.log',
-      error_file: '/var/log/copyai/api.err.log',
+      // Logs go to ~/.pm2/logs/ — no permission issues
       log_date_format: 'YYYY-MM-DD HH:mm:ss',
       merge_logs: true,
-      // Restart behaviour
       autorestart: true,
       restart_delay: 3000,
       max_restarts: 10,
-      // Health check
       listen_timeout: 8000,
       kill_timeout: 5000,
-      // Graceful shutdown
       shutdown_with_message: true,
       wait_ready: true,
     },
 
-    // // ─── Frontend — Next.js ───────────────────────────────────────────────
+    // ─── Frontend — Next.js (uncomment when frontend is deployed) ─────────
     // {
     //   name: 'copyai-web',
     //   cwd: '/var/www/copyai/frontend',
     //   script: 'node_modules/.bin/next',
     //   args: 'start -p 3000',
-    //   instances: 1,             // Next.js handles concurrency internally
+    //   instances: 1,
     //   exec_mode: 'fork',
     //   max_memory_restart: '512M',
     //   env_production: {
     //     NODE_ENV: 'production',
     //     PORT: 3000,
     //   },
-    //   out_file: '/var/log/copyai/web.out.log',
-    //   error_file: '/var/log/copyai/web.err.log',
     //   log_date_format: 'YYYY-MM-DD HH:mm:ss',
     //   merge_logs: true,
     //   autorestart: true,
