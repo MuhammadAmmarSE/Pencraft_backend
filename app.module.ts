@@ -9,10 +9,15 @@ import { Shop } from './database/entities/shop.entity';
 import { RewriteJob } from './database/entities/rewrite-job.entity';
 import { UsageLog } from './database/entities/usage-log.entity';
 
-// Modules
+// Feature Modules
 import { AuthModule } from './modules/auth/auth.module';
 import { CopywriterModule } from './modules/copywriter/copywriter.module';
 import { ProductsModule } from './modules/products/products.module';
+import { BillingModule } from './modules/billing/billing.module';
+import { SchedulerModule } from './modules/scheduler/scheduler.module';
+
+// Health
+import { HealthController } from './health.controller';
 
 @Module({
   imports: [
@@ -36,15 +41,9 @@ import { ProductsModule } from './modules/products/products.module';
         database: config.get('database.name'),
         models: [Shop, RewriteJob, UsageLog],
         autoLoadModels: true,
-        // sync: { alter: true } — use only in dev; use migrations in prod
         sync: config.get('app.nodeEnv') === 'development' ? { alter: true } : false,
         logging: config.get('app.nodeEnv') === 'development' ? console.log : false,
-        pool: {
-          max: 10,
-          min: 0,
-          acquire: 30000,
-          idle: 10000,
-        },
+        pool: { max: 10, min: 0, acquire: 30000, idle: 10000 },
         define: {
           underscored: false,
           charset: 'utf8mb4',
@@ -65,10 +64,16 @@ import { ProductsModule } from './modules/products/products.module';
       ],
     }),
 
+    // ─── Shared (needed for HealthController) ─────────────────────────────────
+    SequelizeModule.forFeature([Shop]),
+
     // ─── Feature Modules ───────────────────────────────────────────────────────
     AuthModule,
     CopywriterModule,
     ProductsModule,
+    BillingModule,
+    SchedulerModule,
   ],
+  controllers: [HealthController],
 })
 export class AppModule {}
